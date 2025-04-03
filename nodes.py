@@ -347,7 +347,11 @@ class LP_Engine:
     def GetMaskImg(self):
         if self.mask_img is None:
             path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "./LivePortrait/utils/resources/mask_template.png")
-            self.mask_img = cv2.imread(path, cv2.IMREAD_COLOR)
+            try:
+                pil_img = Image.open(path).convert("RGB")
+                self.mask_img = np.array(pil_img)
+            except Exception as e:
+                print(f"[ERROR] Cannot open MASK image with Pillow: {e}")
         return self.mask_img
 
     def crop_face(self, img_rgb, crop_factor):
